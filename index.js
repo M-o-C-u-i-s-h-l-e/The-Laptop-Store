@@ -9,6 +9,7 @@ const server = http.createServer((req, res) => {
     const pathName = url.parse(req.url, true).pathname;
     const id = url.parse(req.url, true).query.id;
 
+    // products overview
     if (pathName === "/products" || pathName === "/") {
         res.writeHead(200, {"Content-type": "text/html"});
         fs.readFile(`${__dirname}/templates/overview-template.html`, "utf-8", (err, data) => {
@@ -19,19 +20,25 @@ const server = http.createServer((req, res) => {
                 res.end(overviewOutput);
             });
         });
-    } else if (pathName === "/laptop" && (id >= 0 && id < laptopData.length)) {
+    }
+    // laptop details
+    else if (pathName === "/laptop" && (id >= 0 && id < laptopData.length)) {
         res.writeHead(200, {"Content-type": "text/html"});
         fs.readFile(`${__dirname}/templates/laptop-template.html`, "utf-8", (err, data) => {
             const laptop = laptopData[id];
             const output = replaceTemplate(data, laptop);
             res.end(output);
         });
-    } else if ((/\.(jpg|jpeg|png|gif)$/i).test(pathName)) {
+    }
+    // images
+    else if ((/\.(jpg|jpeg|png|gif)$/i).test(pathName)) {
         fs.readFile(`${__dirname}/data/img${pathName}`, (err, data) => {
             res.writeHead(200, {'Content-type': 'image/jpg'});
             res.end(data);
         });
-    } else {
+    }
+    // url not found
+    else {
         res.writeHead(404, {"Content-type": "text/html"});
         res.end("URL not found");
     }
